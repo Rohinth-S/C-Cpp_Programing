@@ -1,24 +1,24 @@
-#include<stdio.h>
+#include <stdio.h>
+void printpatten(int n);
+
 int main()
 {
- int i,j,n;
- printf("How many rows and you want in your pyramid ?\n");
- scanf("%d",&n);
+    int n = 4;
+    printpatten(n);
+    return 0;
+}
 
-	for(i=1;i<=n;i++){
-
-             for(j=1; j<=2*n-1;j++){
-	   	
-		   if(j>=n-(i-1) && j<=n+(i-1)){
-             
-		   printf("*");	
-              }
-		   else 
-		   {
-			   printf(" ");
-		   }
-	   }	
-	     printf("\n");
-	}
-	return 0;
+void printpatten(int n)
+{
+    if (n == 1)
+    {
+        printf("*\n");
+        return;
+    }
+    printpatten(n - 1);
+    for (int i = 0; i < (2 * n - 1); i++)
+    {
+        printf("*");
+    }
+    printf("\n");
 }

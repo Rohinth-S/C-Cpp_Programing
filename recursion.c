@@ -1,14 +1,20 @@
 #include <stdio.h>
+int factorial(int x);
+int main()
 {
-  void fun(int n)
-  {
-    if(n==0)
-	return;
-	fun(n-1);
-	printf("%d",n);
-  }
-  int main()
+    int a = 5;
+    printf("the value of factoral %d is %d", a, factorial(a));
+    return 0;
+}
+
+int factorial(int x)
 {
-   fun(3);
-  return 0;
+    if (x == 1 || x == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        return x * factorial(x - 1);
+    }
 }
