@@ -1,93 +1,124 @@
 #include <stdio.h>
 #include <stdlib.h>
-struct node
-{
+
+struct node {
     int data;
     struct node *link;
 };
 
-void count_of_nood(struct node *head)
-{
+// Renamed for clarity
+int count_nodes(struct node *head) {
     int count = 0;
-    if (head == NULL)
-    {
-        printf("Linked list is empty !..");
-    }
-    struct node *ptr = NULL;
-    ptr = head;
-    while (ptr != NULL)
-    {
+    struct node *ptr = head;
+    
+    while (ptr != NULL) {
         count++;
         ptr = ptr->link;
     }
-    printf("%d", count);
+    
+    return count;  // Return count instead of printing
 }
 
-void print_data(struct node *head)
-{
-    if (head == NULL)
-    {
-        printf("linked list is empty !..");
+void print_data(struct node *head) {
+    if (head == NULL) {
+        printf("Linked list is empty!\n");
+        return;
     }
-    struct node *ptr = NULL;
-    ptr = head;
-    while (ptr != NULL)
-    {
+    
+    struct node *ptr = head;
+    while (ptr != NULL) {
         printf("%d ", ptr->data);
         ptr = ptr->link;
     }
+    printf("\n");  // Add newline for better formatting
 }
 
-void add_at_end(struct node *head, int data)
-{
-    struct node *ptr, *temp;
-    ptr = head;
-
-    temp = (struct node *)malloc(sizeof(struct node));
+struct node* add_at_end(struct node *head, int data) {
+    struct node *temp = malloc(sizeof(struct node));
+    if (temp == NULL) {
+        printf("Memory allocation failed!\n");
+        return head;
+    }
+    
     temp->data = data;
     temp->link = NULL;
-
-    while (ptr->link != NULL)
-    {
+    
+    if (head == NULL) {
+        return temp;  // Handle empty list case
+    }
+    
+    struct node *ptr = head;
+    while (ptr->link != NULL) {
         ptr = ptr->link;
     }
     ptr->link = temp;
+    return head;
 }
 
-void add_at_pos(struct node *head, int data, int pos)
-{
-    struct node *ptr = head;
-    struct node *ptr2 = malloc(sizeof(struct node));
-    ptr2->data = data;
-    ptr2->link = NULL;
-    pos--;
-    while (pos != 1)
-    {
-        ptr = ptr->link;
-        pos--;
+struct node* add_at_pos(struct node *head, int data, int pos) {
+    if (pos < 1) {
+        printf("Invalid position!\n");
+        return head;
     }
-    ptr2->link = ptr->link;
-    ptr->link = ptr2;
+    
+    // Handle insertion at beginning
+    if (pos == 1) {
+        struct node *temp = malloc(sizeof(struct node));
+        if (temp == NULL) {
+            printf("Memory allocation failed!\n");
+            return head;
+        }
+        temp->data = data;
+        temp->link = head;
+        return temp;
+    }
+    
+    // Check if position exists in list
+    if (head == NULL || pos > count_nodes(head) + 1) {
+        printf("Position out of bounds!\n");
+        return head;
+    }
+    
+    struct node *ptr = head;
+    struct node *temp = malloc(sizeof(struct node));
+    if (temp == NULL) {
+        printf("Memory allocation failed!\n");
+        return head;
+    }
+    
+    temp->data = data;
+    temp->link = NULL;
+    
+    for (int i = 1; i < pos - 1; i++) {
+        ptr = ptr->link;
+    }
+    
+    temp->link = ptr->link;
+    ptr->link = temp;
+    return head;
 }
 
-int main()
-{
-
+int main() {
     struct node *head = NULL;
-    head = (struct node *)malloc(sizeof(struct node));
-    head->data = 45;
-    head->link = NULL;
-
-    struct node *current = NULL;
-    current = (struct node *)malloc(sizeof(struct node));
-    current->data = 98;
-    current->link = NULL;
-    head->link = current;
-
-    add_at_pos(head, 90, 2);
-    add_at_end(head, 67);
+    
+    // Add first node
+    head = add_at_pos(head, 45, 1);
+    
+    // Add subsequent nodes
+    head = add_at_pos(head, 98, 2);
+    head = add_at_pos(head, 90, 2);
+    head = add_at_end(head, 67);
+    
     print_data(head);
-    printf("\n");
-    count_of_nood(head);
+    printf("Number of nodes: %d\n", count_nodes(head));
+    
+    // Free memory
+    struct node *current = head;
+    while (current != NULL) {
+        struct node *temp = current;
+        current = current->link;
+        free(temp);
+    }
+    
     return 0;
 }
